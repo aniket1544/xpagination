@@ -8,11 +8,34 @@ const Pagination = () => {
     const maxRows = 10;
     const maxPages = Math.ceil(employeeList.length / 10);
 
+    useEffect(() => {
+        const start = (currentPage - 1) * maxRows;
+        const end = currentPage * maxRows;
 
+        const currentList = employeeList.slice(start, end);
+        setCurrentList(currentList);
+    }, [currentPage, employeeList]);
 
+    useEffect(() => {
+        fetch('https://geektrust.s3-ap-southeast-1.amazonaws.com/adminui-problem/members.json')
+            .then(res => res.json())
+            .then(data => setEmployeeList(data))
+            .catch(error => alert("failed to fetch data"))
+    }, []);
 
+    const handleNext = () => {
+        if (currentPage === maxPages) {
+            return;
+        }
+        setCurrentPage(prev => prev + 1);
+    }
 
-
+    const handlePrev = () => {
+        if (currentPage === 1) {
+            return;
+        }
+        setCurrentPage(prev => prev - 1);
+    }
 
     return (
         <div>
